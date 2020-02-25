@@ -1,0 +1,587 @@
+{
+% simplerVisa.psl
+% Page layout wizard generated program
+
+
+uses "pageLib.psm"
+
+function pw_defineColors do
+if not isInitialized colorNames do
+% Color name table
+colorNames["rose"] = rose
+colorNames["veryLightLavender"] = veryLightLavender
+colorNames["steelBlue"] = steelBlue
+colorNames["lavender"] = lavender
+colorNames["veryLightSteelBlue"] = veryLightSteelBlue
+colorNames["lightLavender"] = lightLavender
+colorNames["veryLightRose"] = veryLightRose
+colorNames["lightSteelBlue"] = lightSteelBlue
+colorNames["veryLightSeaGreen"] = veryLightSeaGreen
+colorNames["lightGold"] = lightGold
+colorNames["lightRose"] = lightRose
+colorNames["navyBlue"] = navyBlue
+colorNames["lightSeaGreen"] = lightSeaGreen
+colorNames["seaGreen"] = seaGreen
+colorNames["black"] = black
+colorNames["blue"] = blue
+colorNames["green"] = green
+colorNames["cyan"] = cyan
+colorNames["red"] = red
+colorNames["magenta"] = magenta
+colorNames["yellow"] = yellow
+colorNames["white"] = white
+colorNames["cBlack"] = cBlack
+colorNames["cBlue"] = cBlue
+colorNames["cGreen"] = cGreen
+colorNames["cCyan"] = cCyan
+colorNames["cRed"] = cRed
+colorNames["cMagenta"] = cMagenta
+colorNames["cYellow"] = cYellow
+colorNames["cWhite"] = cWhite
+setColorNames colorNames
+end
+end
+
+pw_page1
+while tableBoxLib_isTableOverflow do
+if not isPageEmpty
+newPage
+pw_page2
+end
+if not isPageEmpty
+newPage
+pw_trailer
+
+  uses "flm_tableBoxLib.psm"
+
+include "colorDefs.pin"
+
+% Page Functions Below
+
+}
+{
+
+uses "stdlib.psm"
+uses "datafiles.psm"
+uses "postalLib.psm"
+uses "barcode.psm"
+uses "pageLib.psm"
+uses "flm_tableBoxLib.psm"
+
+function pw_page1 do
+setPageSize 8.500, 11.000
+pw_defineColors
+allowBackgrounds = input["allowBackgrounds"]
+if allowBackgrounds = nil
+allowBackgrounds = true
+else
+allowBackgrounds = stringCompareNoCase allowBackgrounds, "off"
+if allowBackgrounds do
+box = newTextBox 8.500, 11.000, 0, 0 ,0
+setColorFor box, colorNames["veryLight" & page1_vs458]
+gPosition 0,0
+printIn box, ""
+end
+setPageName "page1"
+
+% Image Box
+gPosition 0.250, 0.475
+box = newImageBox 8.000, 1.150, 3
+printImageIn box, "bankLogo.jpg"
+setBottomY box["ty"] + minOf box["ih"], 1.150
+
+% Text Box
+gPosition 0.250, 1.825
+box = newTextBox 3.300, 0.450, 0, 0, true
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica-bold"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+setTextSlant 20.0
+setTextColorFor box, colorNames[page1_vs459]
+printIn box, "Credit Card Center"
+setTextSlant 0
+setBottomY getGY + getTextBottomFor box
+
+% Address Block
+push getFont
+gPosition 0.275, 2.300
+setAddressBlockLinePad 1.2
+setAddressBlockHeight 0.700
+address = (checkedMerge "name") & "\n" & (checkedMerge "addr1") & "\n" & (checkedMerge "addr2") & "\n" & (checkedMerge "city") & ", " & (checkedMerge "state")
+setFont "helvetica", "12"
+textHeight = addressBlock address, nil
+print pop 1
+setBottomY 3.000
+
+% Text Box
+gPosition 3.550, 2.300
+box = newTextBox 1.300, 0.200, 0, 0, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, (time_now "%aM %aD %Y")
+setBottomY getGY + getTextBottomFor box
+
+% 3 of 9 Bar Code
+gPosition 5.850, 2.500
+setColor white
+setFillMode solidFill
+rectangle 2.4, 0.45
+setColor black
+setFillMode noFill
+print3Of9For (checkedMerge "account"), 2.4, 0.45
+setBottomY 2.950
+
+% Text Box
+gPosition 5.850, 2.300
+box = newTextBox 2.400, 0.200, 0, 0, true
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, "Acount: " & (checkedMerge "account")
+setBottomY getGY + getTextBottomFor box
+
+% Custom Box: fileTable
+gPosition 0.300, 3.150
+push getFont
+setFont "helvetica", "12"
+push 0.000
+tableBoxLib_fileTable 7.950, 7.350, "Date,\nRef,\nParticulars,\nTransaction,\nAmount,\nBalance", false, "trans", "yes", "transactions.csn", "account", (checkedMerge "account"), "date,ref,desc,type,amount,balance", "yes", "0.2", "0.75,0.75,3,0.75,1.2,1.2", "ml,ml,ml,ml,mr,mr", "", "", "", "inside", "", page1_vs460, page1_vs461, "white", "light" & page1_vs462 & ",veryLight" & page1_vs463, ""
+pop 1
+print pop 1
+setColor black
+setBottomY getGY
+
+% Text Box
+gPosition 0.025, 0.150
+box = newTextBox 8.450, 0.300, 2, 2, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, (counter_setCount "pageNumber", "1") & "-" & (counter_count "pageNumber", "1", "1") & "-" & (utils_set "start", " " & (utils_pdfPage ))
+setBottomY getGY + getTextBottomFor box
+end % page1
+
+uses "flm_time.psm"
+
+uses "flm_utils.psm"
+
+uses "flm_counter.psm"
+
+uses "flm_ops.psm"
+
+
+function page1_vs458 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page1_vs458 = (checkedInput "maleColor")
+
+otherwise:
+page1_vs458 = (checkedInput "femaleColor")
+end
+end
+
+function page1_vs459 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page1_vs459 = (checkedInput "maleColor")
+
+otherwise:
+page1_vs459 = (checkedInput "femaleColor")
+end
+end
+
+function page1_vs460 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page1_vs460 = (checkedInput "maleColor")
+
+otherwise:
+page1_vs460 = (checkedInput "femaleColor")
+end
+end
+
+function page1_vs461 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page1_vs461 = (checkedInput "maleColor")
+
+otherwise:
+page1_vs461 = (checkedInput "femaleColor")
+end
+end
+
+function page1_vs462 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page1_vs462 = (checkedInput "maleColor")
+
+otherwise:
+page1_vs462 = (checkedInput "femaleColor")
+end
+end
+
+function page1_vs463 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page1_vs463 = (checkedInput "maleColor")
+
+otherwise:
+page1_vs463 = (checkedInput "femaleColor")
+end
+end
+
+}{
+
+uses "stdlib.psm"
+uses "datafiles.psm"
+uses "pageLib.psm"
+uses "flm_tableBoxLib.psm"
+
+function pw_page2 do
+setPageSize 8.500, 11.000
+pw_defineColors
+allowBackgrounds = input["allowBackgrounds"]
+if allowBackgrounds = nil
+allowBackgrounds = true
+else
+allowBackgrounds = stringCompareNoCase allowBackgrounds, "off"
+if allowBackgrounds do
+box = newTextBox 8.500, 11.000, 0, 0 ,0
+setColorFor box, colorNames["veryLight" & page2_vs466]
+gPosition 0,0
+printIn box, ""
+end
+setPageName "page2"
+
+% Text Box
+gPosition 0.000, 0.150
+box = newTextBox 8.450, 0.300, 2, 2, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, "-" & (counter_count "pageNumber", "1", "1") & "-"
+setBottomY getGY + getTextBottomFor box
+
+% Custom Box: fileTable
+gPosition 0.225, 0.650
+push getFont
+setFont "helvetica", "12"
+push 0.000
+tableBoxLib_fileTable 7.950, 9.700, "Date,\nRef,\nParticulars,\nTransaction,\nAmount,\nBalance", false, "trans", "yes", "", "account", (checkedMerge "account"), "date,ref,desc,type,amount,balance", "yes", "0.2", "0.75,0.75,3,0.75,1.2,1.2", "ml,ml,ml,ml,mr,mr", "", "", "", "inside", "", page2_vs467, page2_vs468, "white", "light" & page2_vs469 & ",veryLight" & page2_vs470, ""
+pop 1
+print pop 1
+setColor black
+setBottomY getGY
+end % page2
+
+uses "flm_counter.psm"
+
+uses "flm_ops.psm"
+
+
+function page2_vs466 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page2_vs466 = (checkedInput "maleColor")
+
+otherwise:
+page2_vs466 = (checkedInput "femaleColor")
+end
+end
+
+function page2_vs467 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page2_vs467 = (checkedInput "maleColor")
+
+otherwise:
+page2_vs467 = (checkedInput "femaleColor")
+end
+end
+
+function page2_vs468 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page2_vs468 = (checkedInput "maleColor")
+
+otherwise:
+page2_vs468 = (checkedInput "femaleColor")
+end
+end
+
+function page2_vs469 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page2_vs469 = (checkedInput "maleColor")
+
+otherwise:
+page2_vs469 = (checkedInput "femaleColor")
+end
+end
+
+function page2_vs470 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+page2_vs470 = (checkedInput "maleColor")
+
+otherwise:
+page2_vs470 = (checkedInput "femaleColor")
+end
+end
+
+}{
+
+uses "stdlib.psm"
+uses "datafiles.psm"
+uses "postalLib.psm"
+uses "barcode.psm"
+uses "pageLib.psm"
+uses "flm_shapeBoxLib.psm"
+uses "flm_dataFileBox.psm"
+
+function pw_trailer do
+setPageSize 8.500, 11.000
+pw_defineColors
+allowBackgrounds = input["allowBackgrounds"]
+if allowBackgrounds = nil
+allowBackgrounds = true
+else
+allowBackgrounds = stringCompareNoCase allowBackgrounds, "off"
+if allowBackgrounds do
+box = newTextBox 8.500, 11.000, 0, 0 ,0
+setColorFor box, colorNames["veryLight" & trailer_vs478]
+gPosition 0,0
+printIn box, ""
+end
+
+% Format Box Layout
+initPageLib nil
+setDefaultTextState
+createFormattedTextBox 0.200, 7.161, 1.000, 0.600, 4.7, 0, 1
+createFormattedTextBox 4.350, 1.850, 3.300, 3.250, 0.0, 0, 2
+setPageName "trailer"
+
+% Address Block
+push getFont
+gPosition 4.525, 9.600
+setAddressBlockLinePad 1.2
+setAddressBlockHeight 0.825
+address = "National Bank Of Engraving\nCredit Card Center\nP.O.Box 143\nNew York, NY"
+setFont "helvetica", "12"
+textHeight = addressBlockIMB address, "TFAFDAAADTTFFATTDFADDADDDFTTFTTAATTFDFDFTDTATATFADFFTFADAFADAATTA"
+print pop 1
+setBottomY 10.600
+
+% Address Block
+push getFont
+gPosition 0.275, 8.700
+setAddressBlockLinePad 1.2
+address = trailer_vs479 & " " & (checkedMerge "name") & "\n" & (checkedMerge "addr1") & "\n" & (checkedMerge "addr2") & "\n" & (checkedMerge "city") & ", " & (checkedMerge "state")
+setFont "helvetica", "12"
+textHeight = addressBlock address, nil
+print pop 1
+setBottomY 9.700
+
+% Text Box
+gPosition 3.550, 8.700
+box = newTextBox 1.300, 0.200, 0, 0, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, (time_now "%aM %aD %Y")
+setBottomY getGY + getTextBottomFor box
+
+% 3 of 9 Bar Code
+gPosition 5.850, 8.900
+setColor white
+setFillMode solidFill
+rectangle 2.4, 0.45
+setColor black
+setFillMode noFill
+print3Of9For (checkedMerge "account"), 2.4, 0.45
+setBottomY 9.350
+
+% Text Box
+gPosition 5.850, 8.700
+box = newTextBox 2.400, 0.200, 0, 0, true
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, "Acount: " & (checkedMerge "account")
+setBottomY getGY + getTextBottomFor box
+
+% Image Box
+gPosition 0.250, 7.725
+box = newImageBox 5.000, 0.750, 0
+printImageIn box, "bankLogo.jpg"
+setBottomY box["ty"] + minOf box["ih"], 0.750
+
+% Format Box
+startFormattedTextBox 1
+fb_trailer_7
+endFormattedTextBox
+
+% Text Box
+gPosition 0.300, 9.700
+box = newTextBox 3.300, 1.050, 0, 0, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.40
+printIn box, "Balance Outstanding:\nMinimum Payment Due:\n\nAmount of payment:"
+setBottomY getGY + getTextBottomFor box
+
+% Custom Box: dashedLine
+gPosition -0.000, 7.275
+push 0.000
+shapeBoxLib_dashedLine 8.500, 0.450, "black", "0.01", "0.05", "0.05", ""
+pop 1
+setBottomY getGY
+
+% Custom Box: line
+gPosition 1.850, 10.340
+push 0.000
+shapeBoxLib_line 1.750, 0.250, "", "0.01", ""
+pop 1
+setBottomY getGY
+
+% Text Box
+gPosition 7.525, 7.350
+box = newTextBox 0.950, 0.100, 0, 0, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.20
+printIn box, "Tear Off Here"
+setBottomY getGY + getTextBottomFor box
+
+% Text Box
+gPosition 2.600, 9.700
+box = newTextBox 1.000, 0.500, 1, 0, false
+setDescenderUseFor box, true
+setFontNameFor box, "helvetica"
+setFontSizeFor box, "12"
+setLinePadFor box, 1.40
+printIn box, (strings_dollarString (checkedMerge "balance"), ",", "no") & "\n" & (strings_dollarString trailer_vs480, ",", "no")
+setBottomY getGY + getTextBottomFor box
+
+% Image Box
+gPosition 1.275, 1.850
+box = newImageBox 2.900, 3.250, 1
+setImageBoxHJust box, 2
+printImageIn box, (checkedInput (checkedMerge "manager"))
+setBottomY box["ty"] + minOf box["ih"], 3.250
+
+% Format Box
+startFormattedTextBox 2
+fb_trailer_14
+endFormattedTextBox
+
+% Custom Box: dataFileBox
+gPosition 0.400, 0.300
+push getFont
+setFont "helvetica", "12"
+push 0.000
+dataFileBox_dataFileBox 1.600, 0.800, "name:" & (checkedMerge "name") & "\naccount:" & (checkedMerge "account") & "\nfile:" & (utils_pdfFile ) & "\nstart:" & (utils_get "start") & "\nend:" & (utils_pdfPage ), false, (checkedInput "index"), (checkedInput "format"), "yes", ":", ""
+pop 1
+print pop 1
+setColor black
+setBottomY getGY
+end % trailer
+
+% Format Box Contents
+
+export fb_trailer_7
+
+function fb_trailer_7 do
+setTabSize 0.50
+setFont "wingding.ttf", 30.00
+}
+\uF023{
+end
+
+export fb_trailer_14
+
+function fb_trailer_14 do
+
+local
+wpFontSave, wpHorzFillSave, wpTabSizeSave
+
+wpHorzFillSave = getHorizontalFill
+setHorizontalFill on
+wpTabSizeSave = getTabSize
+setTabSize 0.50
+wpFontSave = getFont
+setFont "Helvetica", 16.00
+}
+{print (strings_nthWordIn (checkedMerge "name"), "1")}, have you heard about our new {
+setFontName "Helvetica-Bold"
+}
+Home Owner's Line of Credit{
+setFontName "Helvetica"
+}
+? Give me a call today at {print (checkedMerge "tel")} and we can have a talk about how we can help you fulfill your dreams now!
+{
+setHorizontalFill off
+}
+
+After all, why wait?{
+setFontSize 18.00
+}
+
+
+{
+setFontSize 15.00
+}
+Your friendly bank manager,
+
+{print (checkedMerge "manager")}{
+print wpFontSave
+tDown 0.1 tUp 0.1
+setHorizontalFill wpHorzFillSave
+setTabSize wpTabSizeSave
+end
+
+
+uses "flm_strings.psm"
+
+uses "flm_time.psm"
+
+uses "flm_utils.psm"
+
+uses "flm_ops.psm"
+
+
+function trailer_vs478 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+trailer_vs478 = (checkedInput "maleColor")
+
+otherwise:
+trailer_vs478 = (checkedInput "femaleColor")
+end
+end
+
+function trailer_vs479 do
+with true select
+((checkedMerge "sex") = "M") <> 0:
+trailer_vs479 = "Mr."
+
+otherwise:
+trailer_vs479 = "Ms."
+end
+end
+
+function trailer_vs480 do
+trailer_vs480 = (ops_mult 0.1,(checkedMerge "balance"),nil,"<balance>")
+end
+
+}
